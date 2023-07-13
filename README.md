@@ -12,7 +12,7 @@ This is set up to be used as a IP/ network protocol only - I have not rewritten 
 There is a test program included that can loop some data requests from the scope. I was using this to test performance and error handling, as especialy with regard to the ESP32 chips, if more than one client was connected to the Onstep SWS the number of socket timeouts and errors would dramatically increase. With the new connection code, I was able to get a 100% response to all commands.
 
 
-* Usage *
+# Usage 
   To configure, modify the config.py file to have the correct IP address of your Onstep scopee. Set a port in the range of 9996-9999. run the test program, you should see some basica info returns such as the status, RA/Dec, etc.
 
   
