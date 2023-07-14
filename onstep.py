@@ -83,7 +83,6 @@ class onstep:
 
     return align_status
 
-
   def tracking_on(self):
     # Turn on tracking
     turn_tracking_on =self.scope.send_command('#:Te#')
@@ -114,7 +113,6 @@ class onstep:
     print('Pulse guide rate: ' + str(self.pulse_guide_rate))
     print('Guide rate:       ' + str(self.guide_rate))
     print('General error:    ' + str(self.general_error))
-    print('Align Max Stars: ' + str(self.align_Max_Stars))
 
   def update_status(self):
     now = datetime.now()
@@ -304,10 +302,14 @@ class onstep:
     self.update_status()
     # Sync only if the scope is tracking
     if self.is_tracking == True:
+      response = "Synch Failed"
       response =self.scope.send_command(':CM#')
-      return response
+      
+      if response =="N/A":
+          response = "Sync Successful"
+          return response
     else:
-      return "Cannot synch"
+      return response
 
   def set_backlash(self, axis = 1, value = 0):
     # Set backlash for axis
@@ -582,4 +584,7 @@ class onstep:
       return True
     else:
       return False
+  def un_park(self):
+    response = self.scope.send_command(':hR#')
+    return response
 
