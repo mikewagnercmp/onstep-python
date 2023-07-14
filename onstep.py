@@ -32,6 +32,10 @@ class onstep:
     self.pulse_guide_rate = None
     self.guide_rate = None
     self.general_error = None
+    self.align_Max_Stars = None
+    self.align_This_Star = None
+    self.align_Last_Star = None
+    self.scope_aligning = None
 
     # TODO Need to add variables for:
     # - aligned or not
@@ -60,7 +64,25 @@ class onstep:
   def get_align_status(self):
     # Align command
     align_status =self.scope.send_command('#:A?#')
+    if len(align_status) == 3:
+        if '0' <= align_status[0] <= '9':
+            self.align_Max_Stars = int(align_status[0])
+        if '0' <= align_status[1] <= '9':
+            self.align_This_Star = int(align_status[1])
+        if '0' <= align_status[2] <= '9':
+            self.align_Last_Star = int(align_status[2])
+        if self.align_This_Star != 0 and self.align_This_Star <= self.align_Last_Star:
+            self.scope_aligning = True
+        else:
+            self.scope_aligning = False
+    else:
+        self.align_Max_Stars = 0
+        self.align_This_Star = 0
+        self.align_Last_Star = 0
+        self.scope_aligning = False
+
     return align_status
+
 
   def tracking_on(self):
     # Turn on tracking
@@ -92,6 +114,7 @@ class onstep:
     print('Pulse guide rate: ' + str(self.pulse_guide_rate))
     print('Guide rate:       ' + str(self.guide_rate))
     print('General error:    ' + str(self.general_error))
+    print('Align Max Stars: ' + str(self.align_Max_Stars))
 
   def update_status(self):
     now = datetime.now()
@@ -281,7 +304,10 @@ class onstep:
     self.update_status()
     # Sync only if the scope is tracking
     if self.is_tracking == True:
-      self.scope.send_command(':CM#')
+      response =self.scope.send_command(':CM#')
+      return response
+    else:
+      return "Cannot synch"
 
   def set_backlash(self, axis = 1, value = 0):
     # Set backlash for axis

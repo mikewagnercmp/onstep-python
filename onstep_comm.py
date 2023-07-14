@@ -70,7 +70,7 @@ class OnstepInterface:
     def read_response(self):
         try:
             data = self.sock.recv(MAX_LEN).decode('utf-8')
-            if len(data) > 0 and data[-1] != '#':
+            if len(data) > 0 and data[-1] != '#'and data not in ['0', '1']:
                 raise MissingTerminatingCharacterError("Missing terminating character")
             return data[:-1]
         except socket.timeout:
