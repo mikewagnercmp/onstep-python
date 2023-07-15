@@ -209,10 +209,12 @@ class onstep:
     return set_target_alt
   
   def set_target_ra(self, ra):
+    #Return: 0 failure, 1 success
     set_target_ra= self.scope.send_command(':Sr' + ra + '#')
     return set_target_ra
 
   def set_target_dec(self, de):
+    #Return: 0 failure, 1 success
     set_target_dec = self.scope.send_command(':Sd' + de + '#')
     return set_target_dec
 
@@ -302,7 +304,7 @@ class onstep:
     self.update_status()
     # Sync only if the scope is tracking
     if self.is_tracking == True:
-      response = "Synch Failed"
+      response = "Sync Failed"
       response =self.scope.send_command(':CM#')
       
       if response =="N/A":
@@ -379,10 +381,9 @@ class onstep:
     get_cor_do = self.scope.send_command(':GX04#')
     return get_cor_do
 
-  def set_utc_offset(self, utc_offset): #TODO TIme dependent
+  def set_utc_offset(self, utc_offset): 
     print('Setting UTC Offset to: ' + utc_offset)
-    self.scope.send_command(':SG' + utc_offset + '#')
-    time.sleep(1)
+    self.scope.send_command(':SG' + utc_offset + '#',1 )
     ret = self.scope.recv()
     if ret == '1':
       return True
@@ -394,21 +395,21 @@ class onstep:
     get_utc= self.scope.send_command(':GG#')
     return get_utc
 
-  def set_date(self): #TODO TIme dependent
+  def set_date(self): 
     t = datetime.now()
     date = t.strftime("%m/%d/%y")
     print('Setting date to: ' + date)
-    ret = self.scope.send_command('#:SC' + date + '#')
+    ret = self.scope.send_command('#:SC' + date + '#',1)
     if ret == '1':
       return True
     else:
       return False
 
-  def set_utcdate(self): #TODO TIme dependent
+  def set_utcdate(self):
     t = datetime.utcnow()
     date = t.strftime("%m/%d/%y")
     print('Setting date to: ' + date)
-    ret =self.scope.send_command(':SC' + date + '#')
+    ret =self.scope.send_command(':SC' + date + '#',1)
     if ret == '1':
       return True
     else:
@@ -419,21 +420,21 @@ class onstep:
     get_date = self.scope.send_command(':GC#')
     return get_date
 
-  def set_time(self): #TODO TIme dependent 1 sec
+  def set_time(self): 
     t = datetime.now()
     curr_time = t.strftime('%H:%M:%S')
     print('Setting time to: ' + curr_time)
-    ret = self.scope.send_command(':SL' + curr_time + '#')   
+    ret = self.scope.send_command(':SL' + curr_time + '#',1)   
     if ret == '1':
       return True
     else:
       return False
 
-  def set_utctime(self): #TODO TIme dependent 1 sec
+  def set_utctime(self): 
     t = datetime.utcnow()
     curr_time = t.strftime('%H:%M:%S')
     print('Setting time to: ' + curr_time)
-    ret = self.scope.send_command(':SL' + curr_time + '#')
+    ret = self.scope.send_command(':SL' + curr_time + '#',1)
     if ret == '1':
       return True
     else:
@@ -457,9 +458,9 @@ class onstep:
     get_sidereal_time = self.scope.send_command(':' + cmd + '#')
     return get_sidereal_time
 
-  def set_horizon_limit(self, limit):  # TODO add exceptions to all methods #TODO TIme dependent
+  def set_horizon_limit(self, limit):  # TODO add exceptions to all methods 
     try:
-      ret = self.scope.send_command(':Sh' + limit + '#')
+      ret = self.scope.send_command(':Sh' + limit + '#',1 )
       if ret == '1':
         return True
       else:
@@ -485,20 +486,18 @@ class onstep:
       return False
 
   def get_longitude(self):
-    # Get controller utc offset
     get_longitude = self.scope.send_command(':Gg#')
     return get_longitude
 
-  def set_latitude(self, latitude): #TODO TIme dependent 2 sec
+  def set_latitude(self, latitude): 
     print('Setting latitude to: ' + latitude)
-    ret = self.scope.send_command(':St' + latitude + '#')
+    ret = self.scope.send_command(':St' + latitude + '#', 2)
     if ret == '1':
       return True
     else:
       return False
 
   def get_latitude(self):
-    # Get controller utc offset
     get_latitude = self.scope.send_command(':Gt#')
     return get_latitude
 
@@ -584,7 +583,27 @@ class onstep:
       return True
     else:
       return False
-  def un_park(self):
-    response = self.scope.send_command(':hR#')
-    return response
 
+  def un_park(self):
+    #Return: 0 failure, 1 success
+    response = self.scope.send_command(':hR#')
+    if response == '0':
+      self.is_parked = True
+      return "Unpark failed"
+    elif response == '1':
+      self.is_parked = False
+      return "Scope Unparked"
+    else:
+      return False
+
+  def move_to_park(self):
+    #Return: 0 failure, 1 success
+      response = self.scope.send_command(':hP#')
+      if response == '0':
+        self.is_parked = "Parking failed"
+        return str(self.is_parked)
+      elif response == '1':
+        self.is_parked = "Parking in progress"
+        return str(self.is_parked)
+      else:
+        return False

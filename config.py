@@ -1,4 +1,4 @@
-ip_address = '192.168.1.25'
+ip_address = '192.168.1.27'
 port = 9996
 
 import sys

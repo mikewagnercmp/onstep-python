@@ -55,6 +55,8 @@ def run_onstep_terminal():
 
     try:
         while True:
+ 
+                
             try:
                 s = config.scope.dump_status()
                 print( "\n")
@@ -63,32 +65,70 @@ def run_onstep_terminal():
                 print(f"Caught an exception: {e}")
 
             try:
-                s = config.scope.get_utc()
-                print(f"Time {s}\n")
-            except Exception as e:
-                error_counter +=1
-                print(f"Caught an exception: {e}")
+                print("Scope parking status is "+ str(config.scope.is_parked))
+                print(f"Lets try  unpark first\n")
+                config.scope.un_park()
+                print("did the scope unpark \n")
+                print("Scope parking status is "+ str(config.scope.is_parked))
 
-            try:
-                s = config.scope.get_ra()
-                print(f"RA {s}\n")
-            except Exception as e:
-                error_counter +=1
-                print(f"Caught an exception: {e}")
+                print("set coordinates for Aldhibah - its circumpolar")
+                config.scope.set_target_ra("17:08:51")
+                config.scope.set_target_dec("+65:41:01")
+                config.scope.slew_equ()
+                
+                
+                config.scope.update_status()
+                while config.scope.is_slewing == True:
+                    print("scope is slewing \n")
+                    time.sleep(.5)
+                    config.scope.update_status()
+                    report()
 
-            
-            try:
-                s = config.scope.get_dec()
-                print(f"DEC {s}\n")
-            except Exception as e:
-                error_counter +=1
-                print(f"Caught an exception: {e}")
-
-            try:
+                print("target set, lets chek \n")
                 report()
+                ans = input("lets now send some different coordinate, check the planetarium")
+                config.scope.set_target_ra("17:20:51")
+                config.scope.set_target_dec("+65:01:01")
+
+                print("Lets sync ")
+                s = config.scope.sync()
+                print(f"synch response {s}\n")
+
+                ans = input("we just synched to coordinates slighlty off of the target.Now we will slew to the original coordinates") 
+
+                config.scope.set_target_ra("17:08:51")
+                config.scope.set_target_dec("+65:41:01")
+                config.scope.slew_equ()
+                
+                config.scope.update_status()
+                while config.scope.is_slewing == True:
+                    print("scope is slewing \n")
+                    time.sleep(.5)
+                    config.scope.update_status()
+                    report()
+                
+                
+
+                ans = input("Scope should have slewed back to the correct target. We will now park")
+
+                print("Lets park")
+                p = config.scope.move_to_park()
+                print(f"Parking status - {p}\n")
+
+                config.scope.update_status()
+                while config.scope.is_slewing == True:
+                    print("scope is slewing \n")
+                    time.sleep(.5)
+                    config.scope.update_status()
+                    report()
+                
+                config.scope.update_status()
+                print("Scope parking status is "+ str(config.scope.is_parked))
+
+
             except Exception as e:
                 error_counter +=1
-                print(f"Caught an exception: {e}")
+                print(f"Caught an exception: {e}")    
 
 
             loop_counter += 1
