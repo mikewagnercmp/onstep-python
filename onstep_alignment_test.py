@@ -26,6 +26,7 @@ stars_coordinates = {
     "Alkaid":       {"RA": "13:47:32", "Dec": "+49*18:48"}, # Circumpolar for most of northern latitudes
     "Dubhe":        {"RA": "11:03:43", "Dec": "+61*45:03"}, # Circumpolar for most of northern latitudes
     "Aldhibah":     {"RA": "17:08:51", "Dec": "+65:41:01"},  #Also circumpolar
+    "Dubhe_Wrong":        {"RA": "11:13:53", "Dec": "+61*10:03"},
     "Aldhibah_Wrong":     {"RA": "17:20:51", "Dec": "+65:01:01"},
     "Alkaid_Wrong":       {"RA": "13:40:32", "Dec": "+49*20:48"}
 }
@@ -62,7 +63,7 @@ def run_onstep_terminal():
                 #Begin Align point 1
 
                 ans = input("\n hit any key to enter alignment mode , Star 1\n")
-                config.scope.align(1)
+                config.scope.align(3)
                 onstep_utils.print_alingment_status()
                 print("set coordinates for Aldhibah - its circumpolar")
                 config.scope.set_target_ra(stars_coordinates["Aldhibah"]["RA"])
@@ -75,30 +76,30 @@ def run_onstep_terminal():
                     print("scope is slewing \n")
                     time.sleep(1)
                     config.scope.update_status()
-                    onstep_utils.report()
+                    
 
-                print("target set, lets check \n")
+                print("Goto complete, scope should be at target, check in planetarium \n")
                 onstep_utils.report()
-                ans = input("lets now send some different coordinate, check the planetarium")
+                ans = input("lets now send some different coordinates simulating a plate solve, check the planetarium")
                 config.scope.set_target_ra(stars_coordinates["Aldhibah_Wrong"]["RA"])
                 config.scope.set_target_dec(stars_coordinates["Aldhibah_Wrong"]["Dec"])
 
-                print("Lets sync \n")
+                print("\n Lets sync \n")
                 s = config.scope.sync()
                 
                 print(f"synch response {s}\n")
                 
                 
                 onstep_utils.print_alingment_status()
-                ans = input("Alignment point should be accepted. Check \n")
+                ans = input("Alignment point should be accepted. check the planetarium \n")
 
                 #   End of align point 1
                 #   Begin align point 2
 
                 ans = input("\n hit any key to enter alignment mode , Star 2\n")
-                config.scope.align(2)
+                #config.scope.align(2) this is incorrect, you need to set this at the beginning
                 onstep_utils.print_alingment_status()
-                print("set coordinates for Aldhibah - its circumpolar")
+                print("set coordinates for Alkaid - its circumpolar")
                 config.scope.set_target_ra(stars_coordinates["Alkaid"]["RA"])
                 config.scope.set_target_dec(stars_coordinates["Alkaid"]["Dec"])
                 config.scope.slew_equ()
@@ -109,25 +110,60 @@ def run_onstep_terminal():
                     print("scope is slewing \n")
                     time.sleep(1)
                     config.scope.update_status()
-                    onstep_utils.report()
+                    
 
-                print("target set, lets check \n")
+                print("Goto complete, scope should be at target, check in planetarium \n")
                 onstep_utils.report()
-                ans = input("lets now send some different coordinate, check the planetarium")
+                ans = input("lets now send some different coordinates simulating a plate solve, check the planetarium")
                 config.scope.set_target_ra(stars_coordinates["Alkaid_Wrong"]["RA"])
                 config.scope.set_target_dec(stars_coordinates["Alkaid_Wrong"]["Dec"])
 
-                print("Lets sync \n")
+                print("\n Lets sync \n")
                 s = config.scope.sync()
                 
                 print(f"synch response {s}\n")
                 
                 
                 onstep_utils.print_alingment_status()
-                ans = input("Alignment point should be accepted. Check \n")
-                
+                ans = input("Alignment point should be accepted. check the planetarium \n")
 
-                print("Lets park")
+                # end of alignment point 2
+                #   Begin align point 3
+
+                ans = input("\n hit any key to enter alignment mode , Star 3\n")
+                
+                onstep_utils.print_alingment_status()
+                print("set coordinates for Dubhe - its circumpolar")
+                config.scope.set_target_ra(stars_coordinates["Dubhe"]["RA"])
+                config.scope.set_target_dec(stars_coordinates["Dubhe"]["Dec"])
+                config.scope.slew_equ()
+                
+                
+                config.scope.update_status()
+                while config.scope.is_slewing == True:
+                    print("scope is slewing \n")
+                    time.sleep(1)
+                    config.scope.update_status()
+                    
+
+                print("Goto complete, scope should be at target, check in planetarium \n")
+                onstep_utils.report()
+                ans = input("lets now send some different coordinates simulating a plate solve, check the planetarium")
+                config.scope.set_target_ra(stars_coordinates["Dubhe_Wrong"]["RA"])
+                config.scope.set_target_dec(stars_coordinates["Dubhe_Wrong"]["Dec"])
+
+                print("\n Lets sync \n")
+                s = config.scope.sync()
+                
+                print(f"synch response {s}\n")
+                
+                
+                onstep_utils.print_alingment_status()
+                ans = input("Alignment point should be accepted. check the planetarium \n")
+
+                # end of alignment point 3
+            
+                print("\n Lets park\n")
                 p = config.scope.move_to_park()
                 print(f"Parking status - {p}\n")
 
@@ -136,8 +172,8 @@ def run_onstep_terminal():
                     print("scope is slewing \n")
                     time.sleep(.5)
                     config.scope.update_status()
-                    onstep_utils.report()
-                
+                    
+               
                 config.scope.update_status()
                 print("Scope parking status is "+ str(config.scope.is_parked))
 
