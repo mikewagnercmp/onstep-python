@@ -52,13 +52,13 @@ class onstep:
     return s
 
   def get_tracking_rate(self):
-    self.scope.send_command('#:GT#')
-    return self.recv_message()
+    tracking = self.scope.send_command(':GT#') # had added pound sign preceigind command?
+    return tracking
 
 
   def align(self, num_stars = 1):
     # Align command
-    align = self.scope.send_command('#:A' + str(num_stars) + '#')
+    align = self.scope.send_command(':A' + str(num_stars) + '#')
     return align
 
   def get_align_status(self):
@@ -82,6 +82,11 @@ class onstep:
         self.scope_aligning = False
 
     return align_status
+
+  def align_accept(self): #TODO new command
+    #accept alingment #Return: 0 failure, 1 success
+    align = self.scope.send_command(":A+#")
+    return align
 
   def tracking_on(self):
     # Turn on tracking
@@ -607,3 +612,48 @@ class onstep:
         return str(self.is_parked)
       else:
         return False
+  def get_temperature(self):  #TODO Update Omstep Command reference
+    # :GX9A#     temperature in deg. C
+    #            Returns: +/-n.n
+    temp = self.scope.send_command(':GX9#')
+    return temp
+  def get_pressure(self): #TODO Update Omstep Command reference
+    # :GX9B#     pressure in mb
+    #            Returns: +/-n.n
+    pressure = self.scope.send_command('GX9B#')
+    return pressure
+  def get_humidity(self): #TODO Update Omstep Command reference
+    # :GX9C#     relative humidity in %
+    #            Returns: +/-n.n
+    humidity = self.scope.send_command(':GX9C#')
+    return humidity
+  def get_dew_point(self): #TODO Update Omstep Command reference
+    # :GX9E#     dew point in deg. C
+    #            Returns: +/-n.n
+    dew = self.scope.send_command(':GX9E#')
+    return dew
+  def axis_to_revert(self): #TODO Update Omstep Command reference
+    # :GXA0#     Get axis/driver revert all state
+    #            Returns: Value
+    # TODO not sure what this does
+    pass
+  def set_temperature(self):  #TODO Update Omstep Command reference
+    # :SX9A#     temperature in deg. C
+    #            Returns: +/-n.n
+    temp = self.scope.send_command(':SX9#')
+    return temp
+  def set_pressure(self): #TODO Update Omstep Command reference
+    # :SX9B#     pressure in mb
+    #            Returns: +/-n.n
+    pressure = self.scope.send_command('SX9B#')
+    return pressure
+  def set_humidity(self): #TODO Update Omstep Command reference
+    # :SX9C#     relative humidity in %
+    #            Returns: +/-n.n
+    humidity = self.scope.send_command(':SX9C#')
+    return humidity
+  def set_dew_point(self): #TODO Update Omstep Command reference
+    # :SX9E#     dew point in deg. C
+    #            Returns: +/-n.n
+    dew = self.scope.send_command(':SX9E#')
+    return dew

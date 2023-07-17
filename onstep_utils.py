@@ -4,6 +4,7 @@
 import time
 import sys
 from datetime import datetime
+import config
 
 
 def report():
@@ -42,3 +43,12 @@ def report():
     
     
     return
+
+def print_alingment_status():
+  config.scope.get_align_status()
+  print('Align max stars: ' + str(config.scope.align_Max_Stars))
+  print('Align this star: ' + str(config.scope.align_This_Star))
+  print('Align last star: ' + str(config.scope.align_Last_Star))
+  print('scope aligning: ' + str(config.scope.scope_aligning))
+
+  return

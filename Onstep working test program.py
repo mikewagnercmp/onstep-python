@@ -48,8 +48,6 @@ def report():
     return
 
 def run_onstep_terminal():
-    #onstep = OnstepInterface.OnstepInterface()
-    #onstep = config.scope
     loop_counter = 0
     error_counter =0 
 
