@@ -311,9 +311,9 @@ class onstep:
 
     # Sync only if the scope is tracking
     if self.is_tracking == True:
-        response = self.scope.send_command(':CM#')
+        sync = self.scope.send_command(':CM#')
 
-        if response =="N/A":
+        if sync =="N/A":
             response = "Sync Successful"
             
     return response  
