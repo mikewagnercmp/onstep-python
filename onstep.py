@@ -307,16 +307,16 @@ class onstep:
   def sync(self):
     # Move back to home position TODO WTF is this
     self.update_status()
+    response = "Sync Failed"  # Initialize response here
+
     # Sync only if the scope is tracking
     if self.is_tracking == True:
-      response = "Sync Failed"
-      response =self.scope.send_command(':CM#')
-      
-      if response =="N/A":
-          response = "Sync Successful"
-          return response
-    else:
-      return response
+        response = self.scope.send_command(':CM#')
+
+        if response =="N/A":
+            response = "Sync Successful"
+            
+    return response  
 
   def set_backlash(self, axis = 1, value = 0):
     # Set backlash for axis
