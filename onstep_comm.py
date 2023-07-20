@@ -31,6 +31,7 @@ class OnstepInterface:
     def __init__(self, ip_address, port):
         self.ip_address = ip_address
         self.port = port
+        self.sock = None
 
     def connect(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -43,10 +44,13 @@ class OnstepInterface:
             raise ConnectionError(f"Could not connect to onstep device: {e}")
 
     def close(self):
-        try:
-            self.sock.close()
-        except socket.error as e:
-            print(f"Could not close connection to onstep device: {e}")
+        if self.sock is not None:
+            try:
+                self.sock.close()
+                self.is_connected = False
+            except socket.error as e:
+                print(f"Could not close connection to onstep device: {e}")
+
 
     def send_command(self, command, delay = 0):
         retry_count = 0
@@ -64,7 +68,7 @@ class OnstepInterface:
             except (ErrorMessageReadError, MissingTerminatingCharacterError) as e:
                 print("Could not send command:")
                 print(e)
-            #finally:
+            #finally: #Ideally we would do this, however, it causes problems with re-using the socket and refactoring is problematic
                # self.close()
 
     def read_response(self):
