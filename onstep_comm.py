@@ -1,11 +1,7 @@
 # Onstep working ESP32 test program
 # Replace with your onstep IP address and port
 
-ip_address = '192.168.1.27'
-port = 9996
-
 import socket
-import readline
 import time
 import sys
 
